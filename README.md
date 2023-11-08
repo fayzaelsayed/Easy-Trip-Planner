@@ -1,5 +1,6 @@
 # Easy-Trip-Planner
-Android mobile application that helps the user to record his planned trips with the start and end geo-points, accompanied with the date and time of the trip and notes. Remind the user with his trips on the time specified by the user. Navigate the user to his destination. keep track with the upcoming and past trips.
+Android mobile application that helps the user to record his planned trips with the start and end geo-points, accompanied with the date and time of the trip and notes. 
+Remind the user with his trips on the time specified by the user. Navigate the user to his destination. keep track with the upcoming and past trips.
 # TECHNOLOGIES
 - Kotlin
 - MVVM architecture 
