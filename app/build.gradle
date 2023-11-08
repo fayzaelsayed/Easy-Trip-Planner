@@ -24,6 +24,9 @@ android {
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
         def apiKey = properties.getProperty('api_key', 'your_API_key')
         buildConfigField("String", "api_key", "\"$apiKey\"")
+        manifestPlaceholders = [
+                apiKey : apiKey
+        ]
     }
 
     buildTypes {
