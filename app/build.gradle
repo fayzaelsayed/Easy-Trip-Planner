@@ -21,8 +21,9 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         Properties properties = new Properties()
-            properties.load(project.rootProject.file("local.properties").newDataInputStream())
-        buildConfigField("String","api_key",properties["api_key"] )
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        def apiKey = properties.getProperty('api_key', 'your_API_key')
+        buildConfigField("String", "api_key", "\"$apiKey\"")
     }
 
     buildTypes {

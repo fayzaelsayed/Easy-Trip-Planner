@@ -33,6 +33,7 @@ import com.google.maps.android.PolyUtil
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.TextHttpResponseHandler
 import cz.msebera.android.httpclient.Header
+import org.json.JSONException
 import org.json.JSONObject
 
 
@@ -150,7 +151,7 @@ class PastTripsFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-       popupMenu.inflate(R.menu.item_menu)
+        popupMenu.inflate(R.menu.item_menu)
         popupMenu.menu.findItem(R.id.editText).isVisible = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             popupMenu.setForceShowIcon(true)
@@ -162,11 +163,11 @@ class PastTripsFragment : Fragment(), OnMapReadyCallback {
         googleMap = map!!
         val email = globalHelper.getSharedPreferences("Email", "")
         viewModel.getFinishedTrips(email!!).observe(viewLifecycleOwner) { trips ->
-            if (trips.isNotEmpty()){
+            if (trips.isNotEmpty()) {
                 finishedTripsList = trips
                 doTheRequest(finishedTripsList!![0])
                 Log.i("kkkkkkkkkkkkkkkkkkkkkkkkk", "onMapReady: $finishedTripsList")
-            }else{
+            } else {
                 googleMap = map
             }
 
@@ -184,10 +185,39 @@ class PastTripsFragment : Fragment(), OnMapReadyCallback {
                 headers: Array<out Header>?,
                 responseString: String?
             ) {
-                polyline?.remove()
-                startMarker?.remove()
-                endMarker?.remove()
-                drawPolyline(responseString, tripEntity)
+                if (responseString.isNullOrEmpty()) {
+                    // Handle the case when the response is empty
+                    Toast.makeText(requireContext(), "Empty response from the server", Toast.LENGTH_LONG).show()
+                } else {
+                    try {
+                        val jsonObject = JSONObject(responseString)
+
+                        if (jsonObject.has("error_message")) {
+                            // This indicates an API-specific error
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(requireContext(), "API Error: $errorMessage", Toast.LENGTH_LONG).show()
+                        } else {
+                            val routes = jsonObject.getJSONArray("routes")
+                            if (routes.length() > 0) {
+                                val route = routes.getJSONObject(0)
+                                drawPolyline(route.toString(), tripEntity)
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "No routes found",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                        Toast.makeText(
+                            requireContext(),
+                            "Error parsing JSON response",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
 
             override fun onFailure(
@@ -237,19 +267,22 @@ class PastTripsFragment : Fragment(), OnMapReadyCallback {
 
         val originListLatLng = tripEntity.startPointLatLng.split(",").map { it.toDouble() }
         val origin = LatLng(originListLatLng[0], originListLatLng[1])
-        val destinationListLatLng = tripEntity.endPointLatLng.split(",").map { it.toDouble() }
+        val destinationListLatLng =
+            tripEntity.endPointLatLng.split(",").map { it.toDouble() }
         val destination = LatLng(destinationListLatLng[0], destinationListLatLng[1])
 //        val cameraPosition = CameraPosition.Builder()
 //            .target(origin)
 //            .zoom(f)
 //            .build()
-        val latLngBound = LatLngBounds.Builder().include(origin).include(destination).build()
+        val latLngBound =
+            LatLngBounds.Builder().include(origin).include(destination).build()
         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBound, 0))
         googleMap.moveCamera(CameraUpdateFactory.zoomTo(googleMap.cameraPosition.zoom - 2))
 
 //        googleMap.addMarker(MarkerOptions().position(origin).title("Start point of ${tripEntity.tripName}"))
         endMarker = googleMap.addMarker(
-            MarkerOptions().position(destination).title("End Point of: ${tripEntity.tripName}")
+            MarkerOptions().position(destination)
+                .title("End Point of: ${tripEntity.tripName}")
         )
 
 
@@ -273,8 +306,10 @@ class PastTripsFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingInflatedId")
     private fun createCustomMarker(tripEntity: TripEntity): Bitmap {
-        val markerView = LayoutInflater.from(requireContext()).inflate(R.layout.view_on_map, null)
-        var textViewTripName = markerView.findViewById<TextView>(R.id.tv_trip_name_on_the_map)
+        val markerView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.view_on_map, null)
+        var textViewTripName =
+            markerView.findViewById<TextView>(R.id.tv_trip_name_on_the_map)
         var textViewTripDistance = markerView.findViewById<TextView>(R.id.tv_trip_distance)
         var textViewTripDuration = markerView.findViewById<TextView>(R.id.tv_trip_duration)
         var imag = markerView.findViewById<ImageView>(R.id.im_map)
