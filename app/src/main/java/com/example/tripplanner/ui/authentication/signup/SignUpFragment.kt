@@ -35,6 +35,11 @@ class SignUpFragment : Fragment(), View.OnFocusChangeListener {
                 observeErrorMessage(errorMessage)
             }
         }
+        viewModel.errorMessageFirebase.observe(viewLifecycleOwner){
+            if (!it.isNullOrEmpty()){
+                Toast.makeText(requireContext(), it,Toast.LENGTH_LONG).show()
+            }
+        }
 
         viewModel.isLogged.observe(viewLifecycleOwner) { isSuccess ->
             isSuccess.let {
@@ -197,6 +202,7 @@ class SignUpFragment : Fragment(), View.OnFocusChangeListener {
                     isErrorEnabled = true
                     error = errorMessage
                 }
+
         }
     }
 }

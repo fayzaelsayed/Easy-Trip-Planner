@@ -24,8 +24,6 @@ import java.util.*
 
 
 class SignInViewModel(application: Application) : AndroidViewModel(application) {
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
     private var globalHelper: GlobalHelper = GlobalHelper(application.applicationContext)
 
     private var _isLogged = MutableLiveData<Boolean>()
@@ -48,6 +46,8 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
         context: Context,
     ) {
         val activity = context as AuthenticationActivity
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
+        val db = FirebaseFirestore.getInstance()
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) {
                 if (it.isSuccessful) {
@@ -91,6 +91,8 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
     fun googleSignInUpdateUI(account: GoogleSignInAccount?) {
         if (account != null) {
             val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
+            val auth: FirebaseAuth = FirebaseAuth.getInstance()
+            val db = FirebaseFirestore.getInstance()
             auth.signInWithCredential(credentials).addOnCompleteListener {
                 if (it.isSuccessful) {
                     val user = Firebase.auth.currentUser

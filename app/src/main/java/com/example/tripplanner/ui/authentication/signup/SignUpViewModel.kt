@@ -2,6 +2,7 @@ package com.example.tripplanner.ui.authentication.signup
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -15,13 +16,18 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application) 
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var globalHelper: GlobalHelper = GlobalHelper(application.applicationContext)
 
-    private var _isLogged = MutableLiveData<Boolean>()
+    private val _isLogged = MutableLiveData<Boolean>()
     val isLogged: LiveData<Boolean>
         get() = _isLogged
 
-    private var _errorMessage = MutableLiveData<String>()
+    private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String>
         get() = _errorMessage
+
+    private val _errorMessageFirebase = MutableLiveData<String>()
+    val errorMessageFirebase: LiveData<String>
+        get() = _errorMessageFirebase
+
 
 
     fun mailSignup(email: String, password: String,name: String, context: Context) {
@@ -42,7 +48,18 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application) 
                         }
                     _isLogged.postValue(true)
                 } else {
+                    val exceptionMessage = it.exception.toString()
+                    Log.i("eeeeeeee", "mailSignup:$exceptionMessage ")
                     _isLogged.postValue(false)
+                    if (exceptionMessage.contains("The email address is already in use by another account.")){
+                        _errorMessageFirebase.postValue("The email address is already in use.")
+                    } else if (exceptionMessage.contains("A network error (such as timeout, interrupted connection or unreachable host) has occurred.")){
+                        _errorMessageFirebase.postValue("Network error, please check your network connection")
+                    }else if(exceptionMessage.contains("The email address is badly formatted.")){
+                        _errorMessageFirebase.postValue("The email address is badly formatted.")
+                    }else{
+                        _errorMessageFirebase.postValue("SignUp Failed")
+                    }
                 }
             }
     }
