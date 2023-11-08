@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/signInFragment">
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.tripplanner.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_mainFragment_to_addTripFragment"
+            app:destination="@id/addTripFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addTripFragment"
+        android:name="com.example.tripplanner.ui.addtrip.AddTripFragment"
+        android:label="Add a new Trip"
+        tools:layout="@layout/fragment_add_trip">
+        <action
+            android:id="@+id/action_addTripFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <argument
+            android:name="currentTrip"
+            app:argType="com.example.tripplanner.database.TripEntity"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_addTripFragment_to_upcomingTripsFragment"
+            app:destination="@id/upcomingTripsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.tripplanner.ui.profile.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.tripplanner.ui.authentication.signin.SignInFragment"
+        android:label="SignInFragment"
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_forgetPasswordFragment"
+            app:destination="@id/forgetPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.tripplanner.ui.authentication.signup.SignUpFragment"
+        android:label="SignUpFragment"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/forgetPasswordFragment"
+        android:name="com.example.tripplanner.ui.authentication.forgetpassword.ForgetPasswordFragment"
+        android:label="ForgetPasswordFragment"
+        tools:layout="@layout/fragment_forget_password">
+        <action
+            android:id="@+id/action_forgetPasswordFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.tripplanner.ui.MainActivity"
+        android:label="MainActivity"
+        app:startDestination="@id/mainFragment"
+        tools:layout="@layout/activity_main" />
+    <fragment
+        android:id="@+id/upcomingTripsFragment"
+        android:name="com.example.tripplanner.ui.upcoming.UpcomingTripsFragment"
+        android:label="UpcomingTripsFragment"
+        tools:layout="@layout/fragment_upcoming_trips">
+        <action
+            android:id="@+id/action_upcomingTripsFragment_to_addTripFragment"
+            app:destination="@id/addTripFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pastTripsFragment"
+        android:name="com.example.tripplanner.ui.pasttrips.PastTripsFragment"
+        android:label="PastTripsFragment"
+        tools:layout="@layout/fragment_past_trips"/>
+</navigation>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:id="@+id/floating_widget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+<!--        <ImageView-->
+<!--            android:id="@+id/bubble_logo"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:src="@drawable/logo"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true" />-->
+
+        <TextView
+            android:id="@+id/bubble_text"
+            android:background="@drawable/logo"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_width="90dp"
+            android:layout_height="90dp"/>
+
+    </RelativeLayout>
+</layout>
